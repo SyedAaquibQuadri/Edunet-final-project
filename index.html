@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Smart Study Planner</title>
+    <!-- CDN libraries (will load in browser) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-theme="light">
+    <div class="app">
+      <header class="app-header">
+        <div class="brand">
+          <div class="logo">SS</div>
+          <div>
+            <h1>Smart Study Planner</h1>
+            <p class="lead">Organize. Focus. Achieve.</p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center">
+          <div id="quote" style="font-size: 20px; color: var(--muted)">
+            "Plan your study, master your time."
+          </div>
+          <button id="themeToggle" class="btn outline">Toggle Theme</button>
+        </div>
+      </header>
+
+      <aside class="sidebar">
+        <div class="profile">
+          <div class="avatar" id="avatar">SQ</div>
+          <div>
+            <h3 id="profileName">Hey, Student</h3>
+            <p id="streakDisplay">Streak: <strong>0</strong> days</p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="openAdd" class="btn">+ Add Task</button>
+          <div class="section-title">Quick Filters</div>
+          <div class="tags">
+            <button class="tag" data-filter="all">All</button>
+            <button class="tag" data-filter="today">Today</button>
+            <button class="tag" data-filter="week">This Week</button>
+            <button class="tag" data-filter="completed">Completed</button>
+          </div>
+
+          <div class="section-title">Categories</div>
+          <div class="tags" id="categoryList">
+            <button class="tag" data-cat="Math">Math</button>
+            <button class="tag" data-cat="Science">Science</button>
+            <button class="tag" data-cat="Homework">Homework</button>
+          </div>
+
+          <div class="section-title">Data</div>
+          <div style="display: flex; gap: 8px">
+            <button id="exportBtn" class="btn outline">Export</button>
+            <button id="importBtn" class="btn outline">Import</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="top-row">
+          <div class="search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M21 21l-4.35-4.35"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              ></path>
+              <circle
+                cx="11"
+                cy="11"
+                r="6"
+                stroke="currentColor"
+                stroke-width="1.5"
+              ></circle>
+            </svg>
+            <input
+              id="searchInput"
+              placeholder="Search tasks, tags, subjects..."
+            />
+          </div>
+          <div class="stats">
+            <div class="stat-card">
+              Tasks: <strong id="totalTasks">0</strong>
+            </div>
+            <div class="stat-card">
+              Completed: <strong id="completedTasks">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 16px;
+          "
+        >
+          <section>
+            <h3 style="margin: 0">Tasks</h3>
+            <div class="grid" id="taskGrid"></div>
+
+            <div class="calendar" id="calendarWrap">
+              <h4 style="margin: 6px 0">Calendar</h4>
+              <div
+                id="calHeader"
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 8px;
+                "
+              >
+                <div><strong id="calMonth"></strong></div>
+                <div>
+                  <button id="prevMonth" class="btn outline">Prev</button>
+                  <button id="nextMonth" class="btn outline">Next</button>
+                </div>
+              </div>
+              <div class="cal-grid" id="calGrid"></div>
+            </div>
+          </section>
+
+          <aside style="display: flex; flex-direction: column; gap: 12px">
+            <div
+              class="pomodoro card"
+              style="background: var(--card); border-radius: 12px"
+            >
+              <h4 style="margin: 0 0 8px">Focus Timer</h4>
+              <div class="timer" id="timerDisplay">25:00</div>
+              <div style="display: flex; gap: 8px; margin-top: 8px">
+                <button id="startTimer" class="btn outline">Start</button>
+                <button id="stopTimer" class="btn outline">Stop</button>
+                <button id="resetTimer" class="btn outline">Reset</button>
+              </div>
+              <div
+                style="margin-top: 8px; font-size: 12px; color: var(--muted)"
+              >
+                Pomodoro: 25m work / 5m break
+              </div>
+            </div>
+
+            <div
+              style="background: var(--card); border-radius: 12px"
+              id="progressCard"
+            >
+              <h4 style="margin: 0 0 8px">Weekly Progress</h4>
+              <canvas id="progressChart" width="360" height="220"></canvas>
+            </div>
+          </aside>
+        </div>
+      </main>
+
+      <div class="modal" id="modal">
+        <div class="card">
+          <h3 id="modalTitle">Add Task</h3>
+          <div style="display: grid; gap: 8px; margin-top: 8px">
+            <div>
+              <label>Title</label>
+              <input id="taskTitle" placeholder="e.g. Revise chapter 3" />
+            </div>
+            <div>
+              <label>Description</label>
+              <textarea id="taskDesc" rows="3"></textarea>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <div style="flex: 1">
+                <label>Due Date</label>
+                <input id="taskDate" type="date" />
+              </div>
+              <div style="width: 140px">
+                <label>Priority</label>
+                <select id="taskPriority">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <div style="flex: 1">
+                <label>Category</label>
+                <input id="taskCategory" placeholder="e.g. Math" />
+              </div>
+              <div style="width: 140px">
+                <label>Recurring</label>
+                <select id="taskRecurring">
+                  <option value="none">None</option>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+                margin-top: 8px;
+              "
+            >
+              <button id="closeModal" class="btn outline">Close</button>
+              <button id="saveTask" class="btn">Save Task</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button id="clearStreakBtn">Clear Streak</button>
+    </div>
+
+    <input
+      id="fileInput"
+      type="file"
+      accept="application/json"
+      style="display: none"
+    />
+
+    <script src="script.js"></script>
+  </body>
+</html>
