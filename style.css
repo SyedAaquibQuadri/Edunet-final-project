@@ -278,21 +278,6 @@ p.lead {
   position: relative;
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-#clearStreakBtn {
-  display: block;
-  margin-top: -200%;
-  margin-left: auto;
-  padding: 10px 16px;
-  border: none;
-  width: 100px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, var(--accent), #8ec6df);
-  color: var(--btn-text);
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: var(--shadow-md);
-  transition: all 0.3s ease;
-}
 
 .task-card:hover {
   transform: translateY(-6px);
@@ -595,3 +580,4 @@ footer {
     width: 400px;
   }
 }
+
