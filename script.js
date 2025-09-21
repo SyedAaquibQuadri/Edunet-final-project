@@ -511,14 +511,3 @@ function markAsCompleted(taskId) {
   }
 }
 
-function clearStreak() {
-  state.streak = 0; // Reset streak to 0
-  save(); // Save the updated state to local storage
-  document.getElementById("streakDisplay").querySelector("strong").textContent =
-    state.streak; // Update the display
-  console.log("Streak has been reset to 0.");
-}
-
-document.getElementById("clearStreakBtn").addEventListener("click", () => {
-  clearStreak();
-});
