@@ -47,7 +47,7 @@ Smart Study Planner is a web-based application designed to help students organiz
 
 ### Responsive Design
 
-- Fully responsive for desktop, tablet, and mobile devices (including screens as small as 300px).
+- Fully responsive for desktop, tablet, and mobile devices.
 
 ---
 
@@ -58,3 +58,4 @@ Smart Study Planner is a web-based application designed to help students organiz
 - **JavaScript**: For dynamic functionality and task management.
 - **GSAP**: For animations.
 - **Chart.js**: For visualizing weekly progress.
+
